@@ -11,7 +11,6 @@ list_of_phones = ["AH0", "N", "S", "L", "T", "R",
 def load_args():
 
   parser = configargparse.ArgumentParser(description = "main")
-  parser.add_argument('--debug', action='store_true', help='Force load val data for debugging')
   parser.add_argument('--device', type=str, default='cuda')
   parser.add_argument('--mode', type=str, default='test')
 
@@ -19,8 +18,6 @@ def load_args():
 
   parser.add_argument('--thresh', default=3, type=int, 
                   help='min number of phonemes in a word at test time')
-
-  parser.add_argument('--checkpoint_dir', type=str)
 
   # Data
   parser.add_argument('--data_root', type=str, required=True, help='Path to the folder with the features')

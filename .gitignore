@@ -2,3 +2,4 @@ __pycache__
 future_release_code/
 *.pyc
 *.pkl
+*.pth

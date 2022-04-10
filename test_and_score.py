@@ -16,6 +16,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 args = load_args()
+print('Testing with{} localization'.format('out' if not args.localization else ''))
 
 from dataloader_test import FeatsDataset, pad_texts
 
@@ -53,7 +54,9 @@ def run_epoch(data_iter, model):
 	sims = []
 	threshed_ious = []
 	loc_probs = []
-	chunk_size = len(words) // 4 # in order to fit on a 12G GPU, can increase if you have more GPU memory
+
+	# in order to fit on a 12G GPU, can increase if you have more GPU memory
+	chunk_size = len(words) // 5
 	for i in prog_bar:
 		feats, bounds_list = data_iter[i]
 		feats = feats.unsqueeze(0).to(args.device)
@@ -61,16 +64,16 @@ def run_epoch(data_iter, model):
 
 		with autocast():
 			with torch.no_grad():
-				# split into halves other-wise OOM
-				out1, loc_out1 = get_preds(model, feats, words[:chunk_size], 
-											feats_mask, words_mask[:chunk_size])
-				out2, loc_out2 = get_preds(model, feats, words[chunk_size:2*chunk_size], 
-										feats_mask, words_mask[chunk_size:2*chunk_size])
-				out3, loc_out3 = get_preds(model, feats, words[2*chunk_size:], 
-										feats_mask, words_mask[2*chunk_size:])
-				out = torch.cat([out1, out2, out3], dim=0)
+				outs, loc_outs = [], []
+				for i in range(0, len(words), chunk_size):
+					o, l = get_preds(model, feats, words[i : i + chunk_size],
+									feats_mask, words_mask[i : i + chunk_size])
+					outs.append(o)
+					loc_outs.append(l)
+
+				out = torch.cat(outs, dim=0)
 				if args.localization:
-					loc_out = torch.cat([loc_out1, loc_out2, loc_out3], dim=0)
+					loc_out = torch.cat(loc_outs, dim=0)
 
 		sims.append(out)
 

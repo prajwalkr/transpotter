@@ -1,4 +1,3 @@
-from config import feat_roots
 import os, torch, random, scipy, cv2
 import numpy as np
 import torch.nn as nn
