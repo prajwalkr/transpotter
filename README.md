@@ -44,4 +44,4 @@ Please cite the following paper if you find our work useful:
 
 ## Acknowledgements
 
-We thank Jay Alammar, the author of [The Illustrated Transformer](https://jalammar.github.io/illustrated-transformer/) for the Transformer implementation. 
+We thank the author of [The Annotated Transformer](https://nlp.seas.harvard.edu/2018/04/03/attention.html) for the Transformer implementation. 
